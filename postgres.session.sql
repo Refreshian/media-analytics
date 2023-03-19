@@ -1,0 +1,1 @@
+select user_name, files from users_table;

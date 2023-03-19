@@ -1,0 +1,643 @@
+{% extends 'base.html' %}
+{% block head %}
+<head>
+    <meta charset=utf-8 />
+    <meta name=viewport content=width=device-width, initial-scale=1.0 />
+    <meta name=generator content=Codeply />
+    <title>Tonality Landscape</title>
+    <base target=_self>
+    <link rel="stylesheet" type="text/css" href="../static/cdn/media_rating/8.0.1_normalize.min.css"></link>
+    <script src="../static/cdn/media_rating/2.4.0_Chart.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="../static/css//bootstrap__.min.css"></link> -->
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+
+</head>
+{% endblock %}
+
+{% block body %}
+
+{% if datagraph %}
+
+<style>
+  .highcharts-figure, .highcharts-data-table table {
+    min-width: auto;
+    max-width: auto;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.highcharts-data-table table {
+	font-family: Verdana, sans-serif;
+	border-collapse: collapse;
+	border: 1px solid #EBEBEB;
+	margin: 10px auto;
+	text-align: center;
+	width: 100%;
+  height: 100%;
+	max-width: 1500px;
+}
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+.highcharts-data-table th {
+	font-weight: 600;
+    padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}
+
+.menus {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+input[type="number"] {
+	min-width: 50px;
+}
+
+form {
+  text-align: center;
+  margin-top: 10px;
+}
+
+</style>
+
+
+  {% for message in get_flashed_messages() %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" style="color: red;">
+    {{ message }}
+    </div>
+  {% endfor %}
+
+  <form action="/tonality_landscape" method="POST" >
+  <div class="input-group">
+    <div class="input-group-prepend" id="button-addon3">
+      <select name="file_choose" class="form-select-sm">
+        <option selected>select File</option>
+            {% for i in range(0, len_files) %}
+                <option value="{{ files[i] }}">{{ files[i] }}</option>
+            {% endfor %}
+        </select>
+      <input type="text" name="daterange" value="01/01/2022 - 01/12/2022"/>
+      <input type="submit" href="{{ url_for('tonality_landscape') }}" name="send" value="Запуск">
+    </div>
+  </div>
+  </form>
+
+    <script>
+      $(function() {
+        $('input[name="daterange"]').daterangepicker({
+          opens: 'center',
+          singleDatePicker: false,
+          startDate: new Date(),
+          showDropdowns: true,
+          timePicker: true,
+          timePicker24Hour: true,
+          timePickerIncrement: 10,
+          autoUpdateInput: true,
+        }, function(start, end, label) {
+          console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        });
+      });
+      </script>
+
+<style>
+  #container {
+    height: 650px;
+}
+
+  #container2 {
+    height: 650px;
+    margin-top: 20px;
+}
+
+#container3 {
+    height: 850px;
+    width: 850px;;
+    margin-top: auto;
+}
+
+</style>
+
+<div id="container"></div>
+
+<hr>
+
+<div id="container2"></div>
+
+<div id="chBar"></div>
+
+<hr>
+
+<div id="containerdonut2" style="margin-top: 50px;"></div>
+
+
+
+
+<script>
+
+    // var data = JSON.parse('{{ datagraph|tojson }}');
+    var data = {{ datagraph|safe }};
+    arr = [];
+
+    for(var i = 0; i < data.data_tonality_hub_neg_name.length; i++) {
+      var obj = {};
+      obj['name'] = data.data_tonality_hub_neg_name[i];
+      obj['y'] = data.data_tonality_hub_neg_data[i];
+      arr.push(obj);
+    }
+
+
+    Highcharts.chart('container', {
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+      },
+      title: {
+      text: 'Негативных упоминаний: {{ datagraph.len_pos }}',
+    },
+      
+      legend: {
+      layout: 'vertical',
+      verticalAlign: 'middle',
+      align: 'right',
+      symbolRadius: 2,
+      useHTML: true,
+      labelFormatter: function () {
+        if (this.name === 'DESTINATION') {
+          return `<span style="min-width: 250px; display:inline-block; border-bottom: 1px solid #b2b2b2;"><span style="float:left;">${this.name}</span><span style="float:right">COUNT</span></span>`;
+        }
+        return `<span style="min-width: 250px; display:inline-block; border-bottom: 1px solid #ccc;"><span style="float:left; font-size:14px; font-weight:normal" >${this.name}</span><span style="float:right">${this.y}</span></span>`;
+      },
+    },
+
+      tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      accessibility: {
+          point: {
+              valueSuffix: '%'
+          }
+      },
+      plotOptions: {
+          pie: {
+              innerSize: '60%',
+              //borderWidth: 5,
+              borderColor: null,
+              size:  '90%' ,
+              dataLabels: {
+                    connectorWidth: true,
+                  enabled: true,
+                  showInLegend: true,
+                  format: '<b>{point.name}</b><br>{point.percentage:.1f} %'
+              }
+          },
+      },
+
+      series: [{
+          name: 'Источники',
+          colorByPoint: true,
+          showInLegend: true,
+          data: arr,
+      }]
+  });
+
+
+arr = [];
+
+for(var i = 0; i < data.data_tonality_hub_pos_name.length; i++) {
+  var obj = {};
+  obj['name'] = data.data_tonality_hub_pos_name[i];
+  obj['y'] = data.data_tonality_hub_pos_data[i];
+  arr.push(obj);
+}
+
+
+Highcharts.chart('container2', {
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+      },
+      title: {
+      text: 'Позитивных упоминаний: {{ datagraph.len_neg }}',
+    },
+      
+      legend: {
+      layout: 'vertical',
+      verticalAlign: 'middle',
+      align: 'right',
+      symbolRadius: 2,
+      useHTML: true,
+      labelFormatter: function () {
+        if (this.name === 'DESTINATION') {
+          return `<span style="min-width: 250px; display:inline-block; border-bottom: 1px solid #b2b2b2;"><span style="float:left;">${this.name}</span><span style="float:right">COUNT</span></span>`;
+        }
+        return `<span style="min-width: 250px; display:inline-block; border-bottom: 1px solid #ccc;"><span style="float:left; font-size:14px; font-weight:normal" >${this.name}</span><span style="float:right">${this.y}</span></span>`;
+      },
+    },
+  responsive: {
+    rules: [{
+      condition: {
+        minWidth: 500,
+      },
+    }]
+  },
+
+      tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      accessibility: {
+          point: {
+              valueSuffix: '%'
+          }
+      },
+      plotOptions: {
+          pie: {
+              innerSize: '60%',
+              //borderWidth: 5,
+              borderColor: null,
+              size:  '90%',
+              dataLabels: {
+                    connectorWidth: true,
+                  enabled: true,
+                  showInLegend: true,
+                  format: '<b>{point.name}</b><br>{point.percentage:.1f} %'
+              }
+          }
+      },
+      series: [{
+          name: 'Источники',
+          colorByPoint: true,
+          showInLegend: true,
+          data: arr,
+      }]
+  });
+
+</script>
+
+
+</figure>
+
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/sunburst.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+  <script>
+
+
+  /* chart.js chart examples */
+
+
+// chart colors
+// https://www.rapidtables.com/web/color/green-color.html
+var colors = ['#ff003b','#28a745','#333333','#ef0f42','#dc3545','#6c757d'];
+var colors_red = ['#8B0000', '#B22222', '#DC143C', '#FF0000', '#CD5C5C', '#F08080', '#FA8072', '#FF6347', '#FF4500', '#DB7093', '#FFA07A'];
+var colors_green = ['#006400', '#008000', '#2E8B57', '#3CB371', '#90EE90', '#32CD32', '#9ACD32', '#7FFF00', '#00FF00', '#9ACD32', '#00FF7F', '#8FBC8F'];
+
+/* large line chart */
+var chLine = document.getElementById("chLine");
+// var datagraph = JSON.parse('{{ datagraph|tojson }}');
+var datagraph = {{ datagraph|safe }};
+
+var chartData = {
+  labels: datagraph.pos_list_name,
+  datasets: [{
+    data: datagraph.pos_list_data,
+    backgroundColor: 'transparent',
+    borderColor: colors[0],
+    borderWidth: 4,
+    pointBackgroundColor: colors[0]
+  }]
+};
+if (chLine) {
+  new Chart(chLine, {
+  type: 'line',
+  data: chartData,
+  options: {
+    scales: {
+      xAxes: [{
+        ticks: {
+          beginAtZero: false
+        }
+      }]
+    },
+    legend: {
+      display: false
+    },
+    responsive: true
+  }
+  });
+}
+
+
+/* bar chart */
+var chBar = document.getElementById("chBar");
+if (chBar) {
+  new Chart(chBar, {
+  type: 'bar',
+  data: {
+    labels: datagraph.pos_list_name,
+    datasets: [{
+      data: datagraph.pos_list_data,
+      backgroundColor: colors[0]
+    },
+    {
+      data: datagraph.neg_list_data,
+      backgroundColor: colors[1]
+    }]
+  },
+  options: {
+    legend: {
+      display: false
+    },
+    scales: {
+        ticks: {
+        beginAtZero: true,
+        min: 0},
+      xAxes: [{
+        display: true,
+        ticks: {
+          beginAtZero: true,
+          max: 100,
+          min: 0
+        },
+        barPercentage: 0.6,
+        categoryPercentage: 0.4
+      }]
+    }
+  }
+  });
+}
+
+/* 3 donut charts */
+var donutOptions = {
+  cutoutPercentage: 85,
+  legend: {position:'bottom', padding:5, labels: {pointStyle:'circle', usePointStyle:false}}
+};
+
+// // donut 1
+// var chDonutData1 = {
+//     labels: datagraph.data_tonality_hub_pos_name,
+//     datasets: [
+//       {
+//         backgroundColor: colors_red.slice(0,11),
+//         borderWidth: 0,
+//         data: datagraph.data_tonality_hub_pos_data
+//       }
+//     ]
+// };
+
+// var chDonut1 = document.getElementById("chDonut1");
+// if (chDonut1) {
+//   new Chart(chDonut1, {
+//       type: 'pie',
+//       data: chDonutData1,
+//       options: donutOptions
+//   });
+// }
+
+// donut 2
+// var chDonutData2 = {
+//     labels: datagraph.data_tonality_hub_neg_name,
+//     datasets: [
+//       {
+//         backgroundColor: colors_green.slice(0,12),
+//         borderWidth: 0,
+//         data: datagraph.data_tonality_hub_neg_data
+//       }
+//     ]
+// };
+// var chDonut2 = document.getElementById("chDonut2");
+// if (chDonut2) {
+//   new Chart(chDonut2, {
+//       type: 'pie',
+//       data: chDonutData2,
+//       options: donutOptions
+//   });
+// }
+
+// BIGdonut 3
+// var namegraph = datagraph.superDonatName.concat(' ', "Негатив: " + datagraph.percent_neg + "%").concat(' ', "Позитив: " + datagraph.percent_pos + "%")
+
+var data = [{
+  id: '0.0',
+  parent: '',
+  name: datagraph.superDonatName,
+}];
+
+
+data.push({
+id: '1.0',
+parent: '0.0',
+name: "Позитив: " + datagraph.percent_pos + "%" });
+
+data.push({
+id: '1.1',
+parent: '0.0',
+name: "Негатив: " + datagraph.percent_neg + "%"});
+
+data.push({
+id: '1.2',
+parent: '0.0',
+name: 'Neutral'});
+
+
+// Neg
+for (i = 0; i < datagraph.neg1.length; i++) {
+    data.push({
+    id: '2.' + i,
+    parent: '1.0',
+    name: datagraph.neg1[i],
+    value: datagraph.hub_neg_val[i]});
+}
+
+for (i = 0; i < datagraph.neg2.length; i++) {
+    for (j = 0; j < datagraph.neg2[i].length; j++)
+
+    data.push({
+    id: '3.' + i,
+    parent: '2.' + i,
+    name: datagraph.neg2[i][j],
+    value: datagraph.neg3[i][j]})
+}
+
+// Pos
+for (i = 0; i < datagraph.pos1.length; i++) {
+    data.push({
+    id: '4.' + i,
+    parent: '1.1',
+    name: datagraph.pos1[i],
+    value: datagraph.hub_pos_val[i]});
+}
+
+for (i = 0; i < datagraph.pos2.length; i++) {
+    for (j = 0; j < datagraph.pos2[i].length; j++)
+
+    data.push({
+    id: '5.' + i,
+    parent: '4.' + i,
+    name: datagraph.pos2[i][j],
+    value: datagraph.pos3[i][j]})
+}
+
+
+Highcharts.chart('containerdonut2', {
+
+  chart: {
+    height: '100%'
+  },
+
+  // Let the center circle be transparent
+  colors: ['#eeeaea', '#28a745', '#8B0000'],
+  // ['transparent'].concat(Highcharts.getOptions().colors),
+
+  title: {
+    text: 'Тональный ландшафт авторов'
+  },
+
+  // subtitle: {
+  //   text: 'Source <a href="https://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)">Wikipedia</a>'
+  // },
+
+  series: [{
+    type: 'sunburst',
+    data: data,
+    turboThreshold: 10000,
+    name: 'Root',
+    allowDrillToNode: true,
+    cursor: 'pointer',
+    dataLabels: {
+      format: '{point.name}',
+      filter: {
+        property: 'innerArcLength',
+        operator: '>',
+        value: 16
+      },
+      rotationMode: 'circular'
+    },
+    levels: [{
+      level: 1,
+      levelIsConstant: false,
+      dataLabels: {
+        filter: {
+          property: 'outerArcLength',
+          operator: '>',
+          value: 64
+        }
+      }
+    }, {
+      level: 2,
+      colorByPoint: true
+    },
+    {
+      level: 3,
+      colorVariation: {
+        key: 'brightness',
+        to: -0.5
+      }
+    }, {
+      level: 4,
+      colorVariation: {
+        key: 'brightness',
+        to: 0.5
+      }
+    }]
+
+  }],
+
+  tooltip: {
+    headerFormat: '',
+    pointFormat: 'Количество сообщений <b>{point.name}</b> : <b>{point.value}</b>'
+  }
+});
+
+
+
+  </script>
+
+
+{% elif not datagraph %}
+
+    <style>
+        form {
+  text-align: center;
+  margin-top: 10px;
+}
+    </style>
+
+  <form action="/tonality_landscape" method="POST" >
+  <div class="input-group">
+    <div class="input-group-prepend" id="button-addon3">
+      <select name="file_choose" class="form-select-sm">
+        <option selected>select File</option>
+            {% for i in range(0, len_files) %}
+                <option value="{{ files[i] }}">{{ files[i] }}</option>
+            {% endfor %}
+        </select>
+      <input type="text" name="daterange" value="01/01/2022 - 01/12/2022"/>
+      <input type="submit" href="{{ url_for('tonality_landscape') }}" name="send" value="Запуск">
+    </div>
+  </div>
+  </form>
+
+    <script>
+      $(function() {
+        $('input[name="daterange"]').daterangepicker({
+          opens: 'center',
+          singleDatePicker: false,
+          startDate: new Date(),
+          showDropdowns: true,
+          timePicker: true,
+          timePicker24Hour: true,
+          timePickerIncrement: 10,
+          autoUpdateInput: true,
+        }, function(start, end, label) {
+          console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        });
+      });
+      </script>
+
+
+{% endif %}
+
+{% endblock %}
+
+
+
+
+
+
+
+

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<!-- https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css -->
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+
+<link rel="stylesheet" type="text/css" href="../static/css/font-awesome.min.css"></link>
+<link rel="stylesheet" type="text/css" href="../static/css/custom.css"></link>
+<!-- <link href="custom.css" rel="stylesheet"></link> -->
+
+<style>
+
+    .highcharts-credits {
+display: none !important;
+}
+ 
+  </style>
+
+    {% block head %}
+        Head text
+    {% endblock %}
+
+</head>
+
+<body>
+        <div class="navbar">
+        <a href="/index" style="margin-left: 15px;">Home</a>
+        <div class="dropdown">
+            <button class="dropbtn" onclick="myFunction()">Menu
+                <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content" id="myDropdown">
+                <a href="{{ url_for('tonality_landscape') }}">Tonality landscape</a>
+                <a href="{{ url_for('information_graph') }}">Information Graph</a>
+                <a href="{{ url_for('media_rating') }}">Media Rating</a>
+                <a href="{{ url_for('voice') }}">Voice of Customer</a>
+                <a href="{{ url_for('competitors') }}">Competitive Environment</a>
+                <a href="{{ url_for('external_factors') }}">External Factors</a>
+                <a href="{{ url_for('data') }}">Data</a>
+                <a href="{{ url_for('clusterisation') }}">Author Clustering</a>
+                <a href="{{ url_for('classification') }}"> Texts Classification </a>
+            </div>
+        </div> 
+        <a href="{{ url_for('faq-page') }}">FAQ</a>
+        <a href="login" style="display: block; float: right; margin-right: 1px;">Log out</a>
+        
+        </div>
+        
+      <script>
+      /* When the user clicks on the button, 
+      toggle between hiding and showing the dropdown content */
+      function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+      }
+      
+      // Close the dropdown if the user clicks outside of it
+      window.onclick = function(e) {
+        if (!e.target.matches('.dropbtn')) {
+        var myDropdown = document.getElementById("myDropdown");
+          if (myDropdown.classList.contains('show')) {
+            myDropdown.classList.remove('show');
+          }
+        }
+      }
+      </script>
+    {% block body %}
+      Body text
+    {% endblock %}
+</body>
+</html>
