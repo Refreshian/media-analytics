@@ -6560,6 +6560,7 @@ def delete_folder(folder):
 
 @app.route('/contacts', methods=['GET', 'POST'], endpoint='contacts')
 def contacts():
+    # https://itchief.ru/examples/lab.php?topic=javascript&file=social-links
     return render_template('contacts.html')
 
 
