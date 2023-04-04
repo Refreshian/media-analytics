@@ -1354,17 +1354,17 @@ def start_task():
         import csv
 
         os.chdir(path_projector_files) 
-        if not os.path.exists(filename.replace('.json', '')):
-            os.mkdir(filename.replace('.json', ''))
-            os.chdir(path_projector_files + '/' + filename.replace('.json', ''))
+        if not os.path.exists(foldername):
+            os.mkdir(path_projector_files + '/' + foldername)
+            os.chdir(path_projector_files + '/' + foldername)
         else:
-            os.chdir(path_projector_files + '/' + filename.replace('.json', ''))
+            os.chdir(path_projector_files + '/' + foldername)
 
         with open(filename.replace('.json', '.tsv'), 'w') as f:
             for line in tsv_embed_list:
                 f.write(f"{line}\n")
 
-        test_names = names_list
+        test_names = names_list 
         with open(filename.replace('.json', '.txt'), 'w', encoding="utf-8") as f:
             for line in test_names:
                 f.write(f"{line}\n")
@@ -1384,18 +1384,12 @@ def start_task():
         for name in dir():
             try:
                 if not name.startswith('_'):
-                    # print('!!!!!---!!!!!')
-                    # print(name)
-                    # print(sys.getsizeof(name))
                     del globals()[name]
             except:
                 continue
 
         for name in dir():
             try:
-                # print('&&&&&---&&&&&')
-                # print(name)
-                # print(sys.getsizeof(name))
                 if not name.startswith('_'):
                     del locals()[name]
             except:
@@ -1463,6 +1457,15 @@ def delete_files_tut(directory, filename):
         os.remove(file_to_del)
     except:
         pass
+
+    # удаляем .tsv и .txt файлы из projector files
+    os.chdir(templates_path)
+    if filename.replace('.json', '.tsv') in os.listdir(path_projector_files + '/' + directory):
+        print(f'yes .tsv') 
+        os.remove(path_projector_files + '/' + directory +'/' + filename.replace('.json', '.tsv'))
+    if filename.replace('.json', '.txt') in os.listdir(path_projector_files + '/' + directory):
+        print(f'yes .txt') 
+        os.remove(path_projector_files + '/' + directory + '/' + filename.replace('.json', '.txt'))
 
     os.chdir(path_themes_tonality_models)
     print(filename)
@@ -6115,11 +6118,10 @@ def data():
     if session['user'] == 'admin@admin.ru':
 
         os.chdir(path_to_files)
-        json_files = [pos_json for pos_json in os.listdir(os.getcwd()) if pos_json.endswith('.json')]
-        data_folders = [x.replace('.json', '') for x in json_files]
-        len_files = len(json_files)
+        directories = next(os.walk('.'))[1]
+        len_files = len(directories)
         
-        return render_template('author_cluster_files.html', data_folders=data_folders, len_folders=len_files)
+        return render_template('author_cluster_files.html', data_folders=directories, len_folders=len_files)
 
     if session['user'] != 'admin@admin.ru':
         # вывод пользователю файлов с его правом доступа
@@ -6132,6 +6134,7 @@ def data():
         d.append(object_as_dict(user_rules))
 
         os.chdir(path_to_files)
+        directories = next(os.walk('.'))[1]
         # если нет доступных данных для пользователя - просим загрузить их
         try:
             user_files = d[0]['files'].split(',')
@@ -6140,9 +6143,9 @@ def data():
 
         user_files = [x.replace('.json', '') for x in user_files]
         data_folders = [x for x in next(os.walk(path_projector_files))[1] if x in user_files]
-        len_folders = len(data_folders)
+        len_folders = len(directories)
 
-        return render_template('author_cluster_files.html', data_folders=data_folders, len_folders=len_folders)
+        return render_template('author_cluster_files.html', data_folders=directories, len_folders=len_folders)
 
 
 @app.route('/open-folder-projector/<foldername>')
