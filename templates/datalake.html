@@ -12,13 +12,15 @@
   href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
 />
 
-{% endblock %}
+{% endblock %} {% block body %} {% if not json_files_in_folder %}
+
+<h3>Все файлы в директории {{directory}}</h3>
+
+{% elif json_files_in_folder %}
+
+<h3>Все файлы в директории {{directory}}</h3>
 
 <style>
-  body {
-    margin: 32px;
-  }
-
   /*.btn {*/
   /*  display: flex;*/
   /*  align-items: center;*/
@@ -35,108 +37,34 @@
     font-size: 16px;
     color: red;
   }
-</style>
-{% block body %} {% if not admin %}
 
-<ul>
-  {% for key in files_dict.keys() %}
-  <li style="margin-top: 20px">
-    {{key}} {% for val in files_dict[key] %}
-    <ul style="margin-top: 5px">
-      <a href="/return-files/{{val}}" target="blank"
-        ><button type="button" class="btn btn-link">{{ val }}</button></a
-      >
-      <!--                <a href="/delete-file/{{val}}" style="margin-left: 2px; background-color: tomato"> Удалить </a>-->
-      <button class="btn-delete">
-        <span class="mdi mdi-delete mdi-24px"></span>
-        <span class="mdi mdi-delete-empty mdi-24px"></span>
-        <a
-          class="btn-deletes"
-          href="/delete-file/{{val}}"
-          style="color: indianred"
-          >Delete</a
-        >
-      </button>
-    </ul>
-    {% endfor %}
-  </li>
-  {% endfor %}
+  h1 {
+    background-color: black;
+    color: white;
+  }
+</style>
+
+{% for i in range(0, len_files) %}
+<ul style="margin-top: 5px">
+  <a
+    href="/return-files/{{directory}}/{{json_files_in_folder[i]}}"
+    target="blank"
+    ><button type="button" class="btn btn-link">
+      {{json_files_in_folder[i]}}
+    </button></a
+  >
+  <button class="btn-delete">
+    <span class="mdi mdi-delete mdi-24px"></span>
+    <span class="mdi mdi-delete-empty mdi-24px"></span>
+    <a
+      class="btn-deletes"
+      href="/delete-file/{{directory}}/{{json_files_in_folder[i]}}"
+      style="color: indianred"
+      >Delete</a
+    >
+  </button>
 </ul>
-<br />
-<h4 style="margin-left: 25px">Загрузить файл</h4>
-
-<form
-  action="{{ url_for('datalake') }}"
-  method="POST"
-  enctype="multipart/form-data"
-  style="margin-left: 25px"
-  id="category"
-  name="filenames"
->
-  <p><input type="file" name="filename" multiple="" id="element1" /></p>
-  <input type="submit" value="ОК" id="element2" />
-</form>
-
-<style type="text/css">
-  #element1 {
-    float: left;
-    margin-right: -5px;
-  }
-  #element2 {
-    float: left;
-  }
-</style>
-
-{% elif admin %}
-
-<ul>
-  {% for key in files_dict.keys() %}
-  <li style="margin-top: 20px">
-    {{key}} {% for val in files_dict[key] %}
-    <ul style="margin-top: 5px">
-      <a href="/return-files/{{val}}" target="blank"
-        ><button type="button" class="btn btn-link">{{ val }}</button></a
-      >
-      <!--                <a href="/delete-file/{{val}}" style="margin-left: 2px; background-color: tomato"> Удалить </a>-->
-      <button class="btn-delete">
-        <span class="mdi mdi-delete mdi-24px"></span>
-        <span class="mdi mdi-delete-empty mdi-24px"></span>
-        <a
-          class="btn-deletes"
-          href="/delete-file/{{val}}"
-          style="color: indianred"
-          >Delete</a
-        >
-      </button>
-    </ul>
-    {% endfor %}
-  </li>
-  {% endfor %}
-</ul>
-<br />
-<h4 style="margin-left: 25px">Загрузить файл</h4>
-
-<form
-  action="{{ url_for('datalake') }}"
-  method="POST"
-  enctype="multipart/form-data"
-  style="margin-left: 25px"
-  id="category"
-  name="filenames"
->
-  <p><input type="file" name="filename" multiple="" id="element1" /></p>
-  <input type="submit" value="ОК" id="element2" />
-</form>
-
-<style type="text/css">
-  #element1 {
-    float: left;
-    margin-right: -5px;
-  }
-  #element2 {
-    float: left;
-  }
-</style>
+{% endfor %}
 
 <style>
   .container {
@@ -186,14 +114,5 @@
     transition: 0.05s;
   }
 </style>
-
-<hr style="width: 30%; margin-left: 20px; margin-top: 80px" />
-
-<div class="button">
-  <div class="icon">
-    <a href="users_config"> <i class="fa fa-user-circle-o fa-3x"></i></a>
-  </div>
-  <p>Users</p>
-</div>
 
 {% endif %} {% endblock %}
