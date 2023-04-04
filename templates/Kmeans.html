@@ -1,4 +1,4 @@
-
+{% extends 'base.html' %} {% block head %}
 
 <link rel="stylesheet" href="/static/css/multi-checkbox-select.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
@@ -13,7 +13,9 @@
 
 <link rel="stylesheet" type="text/css" href="../static/css/font-awesome.min.css"></link>
 <link rel="stylesheet" type="text/css" href="../static/css/custom.css"></link>
-<title>Kmeans-Clusterisation Texts </title>
+<title>Kmeans-Classification Texts </title>
+
+{% endblock %} {% block body %}
 
 <style>
   form {
@@ -70,49 +72,7 @@
 
 {% if data_table %}
 
-  <div class="navbar">
-    <a href="/index" style="margin-left: 15px;">Home</a>
-    <div class="dropdown">
-        <button class="dropbtn" onclick="myFunction()">Menu
-            <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="myDropdown">
-            <a href="{{ url_for('tonality_landscape') }}">Tonality landscape</a>
-            <a href="{{ url_for('information_graph') }}">Information Graph</a>
-            <a href="{{ url_for('media_rating') }}">Media Rating</a>
-            <a href="{{ url_for('voice') }}">Voice of Customer</a>
-            <a href="{{ url_for('competitors') }}">Competitive Environment</a>
-            <a href="{{ url_for('external_factors') }}">External Influence</a>
-            <a href="{{ url_for('datafolder') }}">Files</a>
-            <a href="{{ url_for('authors') }}">Author Clustering</a>
-            <a href="{{ url_for('classification') }}"> Text Classification</a>
-        </div>
-    </div> 
-    <a href="#news">FAQ</a>
-    <a class="isDisabled" href="#">Exit</a>
-  <!--            "{{ url_for('index') }}"-->
-    </div>
-
-
-  <script>
-  /* When the user clicks on the button, 
-  toggle between hiding and showing the dropdown content */
-  function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
-  }
-
-  // Close the dropdown if the user clicks outside of it
-  window.onclick = function(e) {
-    if (!e.target.matches('.dropbtn')) {
-    var myDropdown = document.getElementById("myDropdown");
-      if (myDropdown.classList.contains('show')) {
-        myDropdown.classList.remove('show');
-      }
-    }
-  }
-  </script>
-
-<form action="/Kmeans" method="POST" style="display: inline-block;">
+<form action="/Kmeans" method="POST" style="display: inline-block; margin-top: 5px;">
   <select class="custom-select" name="file_choose">
     {% for key, val in folders_dict_files.items() %} {% if val|length != 0
     %}
@@ -547,50 +507,7 @@ data-full-width-responsive="true"></ins>
 
 {% elif not data_table %}
 
-  <div class="navbar">
-    <a href="/index" style="margin-left: 15px;">Home</a>
-    <div class="dropdown">
-        <button class="dropbtn" onclick="myFunction()">Menu
-            <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="myDropdown">
-            <a href="{{ url_for('tonality_landscape') }}">Tonality landscape</a>
-            <a href="{{ url_for('information_graph') }}">Information Graph</a>
-            <a href="{{ url_for('media_rating') }}">Media Rating</a>
-            <a href="{{ url_for('voice') }}">Voice of Customer</a>
-            <a href="{{ url_for('competitors') }}">Competitive Environment</a>
-            <a href="{{ url_for('external_factors') }}">External Influence</a>
-            <a href="{{ url_for('datafolder') }}">Files</a>
-            <a href="{{ url_for('authors') }}">Author Clustering</a>
-            <a href="{{ url_for('classification') }}"> Text Classification</a>
-        </div>
-    </div> 
-    <a href="#news">FAQ</a>
-    <a class="isDisabled" href="#">Exit</a>
-  <!--            "{{ url_for('index') }}"-->
-    </div>
-
-
-  <script>
-  /* When the user clicks on the button, 
-  toggle between hiding and showing the dropdown content */
-  function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
-  }
-
-  // Close the dropdown if the user clicks outside of it
-  window.onclick = function(e) {
-    if (!e.target.matches('.dropbtn')) {
-    var myDropdown = document.getElementById("myDropdown");
-      if (myDropdown.classList.contains('show')) {
-        myDropdown.classList.remove('show');
-      }
-    }
-  }
-  </script>
-
-
-  <form action="/Kmeans" method="POST" style="display: inline-block;">
+  <form action="/Kmeans" method="POST" style="display: inline-block; margin-top: 5px;">
       <select class="custom-select" name="file_choose">
         {% for key, val in folders_dict_files.items() %} {% if val|length != 0
         %}
@@ -635,3 +552,4 @@ data-full-width-responsive="true"></ins>
   </form>
 
 {% endif %}
+{% endblock %}

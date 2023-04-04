@@ -294,6 +294,8 @@ def tonality():
         for i in range(len(directories)):
             folders_dict_files[directories[i]] = [file for file in os.listdir(directories[i]) if file.endswith('.json')]
 
+        # удаляем пустые директории (в которых нет разрешенных пользователю файлов)
+        folders_dict_files = {k: v for k, v in folders_dict_files.items() if v != []}
 
     elif session['user'] != 'admin@admin.ru':
         
@@ -1549,6 +1551,8 @@ def information_graph():
         for i in range(len(directories)):
             folders_dict_files[directories[i]] = [file for file in os.listdir(directories[i]) if file.endswith('.json')]
 
+        # удаляем пустые директории (в которых нет разрешенных пользователю файлов)
+        folders_dict_files = {k: v for k, v in folders_dict_files.items() if v != []}
 
     elif session['user'] != 'admin@admin.ru':
         
@@ -2332,6 +2336,8 @@ def media_rating():
         for i in range(len(directories)):
             folders_dict_files[directories[i]] = [file for file in os.listdir(directories[i]) if file.endswith('.json')]
 
+        # удаляем пустые директории (в которых нет разрешенных пользователю файлов)
+        folders_dict_files = {k: v for k, v in folders_dict_files.items() if v != []}
 
     elif session['user'] != 'admin@admin.ru':
         
@@ -2776,6 +2782,8 @@ def voice():
         for i in range(len(directories)):
             folders_dict_files[directories[i]] = [file for file in os.listdir(directories[i]) if file.endswith('.json')]
 
+        # удаляем пустые директории (в которых нет разрешенных пользователю файлов)
+        folders_dict_files = {k: v for k, v in folders_dict_files.items() if v != []}
 
     elif session['user'] != 'admin@admin.ru':
         
@@ -3087,6 +3095,8 @@ def Kmeans():
         for i in range(len(directories)):
             folders_dict_files[directories[i]] = [file for file in os.listdir(directories[i]) if file.endswith('.json')]
 
+        # удаляем пустые директории (в которых нет разрешенных пользователю файлов)
+        folders_dict_files = {k: v for k, v in folders_dict_files.items() if v != []}
 
     elif session['user'] != 'admin@admin.ru':
         
@@ -5442,6 +5452,8 @@ def external_factor():
         for i in range(len(directories)):
             folders_dict_files[directories[i]] = [file for file in os.listdir(directories[i]) if file.endswith('.json')]
 
+        # удаляем пустые директории (в которых нет разрешенных пользователю файлов)
+        folders_dict_files = {k: v for k, v in folders_dict_files.items() if v != []}
 
     elif session['user'] != 'admin@admin.ru':
         
@@ -5653,7 +5665,9 @@ def BertTopic():
         folders_dict_files = {}
         for i in range(len(directories)):
             folders_dict_files[directories[i]] = [file for file in os.listdir(directories[i]) if file.endswith('.json')]
-
+    
+        # удаляем пустые директории (в которых нет разрешенных пользователю файлов)
+        folders_dict_files = {k: v for k, v in folders_dict_files.items() if v != []}
 
     elif session['user'] != 'admin@admin.ru':
         
@@ -5776,6 +5790,8 @@ def ldatopic():
         for i in range(len(directories)):
             folders_dict_files[directories[i]] = [file for file in os.listdir(directories[i]) if file.endswith('.json')]
 
+        # удаляем пустые директории (в которых нет разрешенных пользователю файлов)
+        folders_dict_files = {k: v for k, v in folders_dict_files.items() if v != []}
 
     elif session['user'] != 'admin@admin.ru':
         
@@ -5806,7 +5822,7 @@ def ldatopic():
         folders_dict_files = {}
         for i in range(len(directories)):
             folders_dict_files[directories[i]] = list(set([file for file in os.listdir(directories[i]) if file.endswith('.json') if file in json_files]))
-
+        
         # удаляем пустые директории (в которых нет разрешенных пользователю файлов)
         folders_dict_files = {k: v for k, v in folders_dict_files.items() if v != []}
         
@@ -6110,7 +6126,7 @@ def data():
 
 
 @app.route('/author_cluster_files', methods=['GET', 'POST'], endpoint='author_cluster_files')
-def data():
+def author_cluster_files():
 
     if 'user' not in session:
         return redirect('login')
